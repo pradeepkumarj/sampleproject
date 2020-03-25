@@ -1,0 +1,112 @@
+<div class="container">
+
+  <!-- -------- showing category creation form -------------- -->
+  <button color="primary" type="button" (click)="formSubmitted=false;type='categoryCreation'">Add Category</button>
+
+  <!-- -------- showing product creation form -------------- -->
+  <button color="primary" type="button" (click)="formSubmitted=false;type='productCreation'">Add Product</button>
+
+  <!-- -------- showing category deletion form -------------- -->
+  <button color="primary" type="button" (click)="formSubmitted=false;type='categoryList'">Category List</button>
+
+  <br>
+  <br>
+
+  <!-- +++++++++++++++++= create category ++++++++++++++++++++ -->
+  <div *ngIf="type=='categoryCreation'">
+    <form #categoryForm='ngForm' name="categoryForm">
+      <!-- -------- category Name Field -------------- -->
+      <div class="row">
+        <div style="padding-left: 20px;">
+          <label>Category Name </label>
+          <input autocomplete="off" class="form-control" type="text" [(ngModel)]="name" name="name"
+            #categoryNameControl="ngModel" required>
+        </div>
+        <div
+          *ngIf="categoryNameControl.invalid && (categoryNameControl.dirty || categoryNameControl.touched || formSubmitted ) && categoryNameControl.errors">
+          <span *ngIf="categoryNameControl.errors.required" style="color:red">Category Name is Required
+          </span>
+        </div>
+      </div>
+
+      <!-- ----------------Category addition button ---------------------- -->
+      <button color="primary" type="button" (click)="addCategory(categoryForm)">Add</button>
+    </form>
+  </div>
+
+  <!-- ++++++++++++++++++++++ product creation ++++++++++++++++++++= -->
+  <div *ngIf="type=='productCreation'">
+    <form #productForm='ngForm' name="productForm">
+
+      <!-- -------- category Field (statically 4 categories)-------------- -->
+      <div class="row">
+        <div style="padding-left: 20px;">
+          <label>Category </label>
+          <select [(ngModel)]="category" name="category" #categoryControl="ngModel" required>
+            <option *ngFor="let item of categoryData" [(value)]="item._id">{{item?.name}}</option>
+          </select>
+        </div>
+        <div
+          *ngIf="categoryControl.invalid && (categoryControl.dirty || categoryControl.touched || formSubmitted) && categoryControl.errors">
+          <span *ngIf="categoryControl.errors.required" style="color:red">Category is Required
+          </span>
+        </div>
+      </div>
+      <br>
+
+      <!-- -------- product Field -------------- -->
+      <div class="row">
+        <div style="padding-left: 20px;">
+          <label>Product Name </label>
+          <input autocomplete="off" class="form-control" type="text" [(ngModel)]="productname" name="productname"
+            #productNameControl="ngModel" required>
+        </div>
+        <div
+          *ngIf="productNameControl.invalid && (productNameControl.dirty || productNameControl.touched || formSubmitted ) && productNameControl.errors">
+          <span *ngIf="productNameControl.errors.required" style="color:red">Product Name is Required
+          </span>
+        </div>
+      </div>
+
+      <!-- -------- price Field -------------- -->
+      <div class="row">
+        <div style="padding-left: 20px;">
+          <label>Price </label>
+          <input autocomplete="off" class="form-control" type="text" [(ngModel)]="price" name="price"
+            (keypress)="numberOnly($event)" placeholder="Enter only numbers" #priceControl="ngModel" required>
+        </div>
+        <div
+          *ngIf="priceControl.invalid && (priceControl.dirty || priceControl.touched || formSubmitted ) && priceControl.errors">
+          <span *ngIf="priceControl.errors.required" style="color:red">Price is Required
+          </span>
+        </div>
+      </div>
+      <!-- -------- adding products button -------------- -->
+      <button color="primary" type="submit" (click)="addProduct(productForm)">Add</button>
+    </form>
+  </div>
+
+
+  <!-- +++++++++++++++= catgory List +++++++++++++++++++++++++++++++ -->
+
+  <div *ngIf="type=='categoryList'">
+    <!-- -------- category -------------- -->
+    <div *ngFor="let item of categoryData;index as i">
+      {{i+1}}-{{item?.name}}
+      <i class="fa fa-trash" style="cursor:pointer" (click)="deleteCategory(item._id)"></i>
+      <button (click)="getProducts(item._id);type='viewProducts'">View Products</button>
+    </div>
+  </div>
+
+
+  <!-- +++++++++++++++= Products List +++++++++++++++++++++++++++++++ -->
+
+  <div *ngIf="type=='viewProducts'">
+    <!-- -------- category -------------- -->
+    <div *ngFor="let item of productData;index as i">
+      {{i+1}}-{{item?.productname}}, Price: {{item?.price}}
+    </div>
+    <button (click)="type='categoryList'">Go Back</button>
+  </div>
+
+</div>
